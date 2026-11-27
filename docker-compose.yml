@@ -1,0 +1,79 @@
+services:
+  # 1. Oracle Database Service
+  oracle_db:
+    image: gvenzl/oracle-free:latest
+    container_name: oracle_container
+    environment:
+      - ORACLE_PASSWORD=@HardworkingLaurde7
+      - APP_USER=system
+      - APP_USER_PASSWORD=@HardworkingLaurde7
+    ports:
+      - "1522:1521"
+    volumes:
+      - oradata:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+  # 2. Spring Boot Service
+  backend_app:
+    build: ./spring_rest # Points to the folder containing your backend Dockerfile
+    container_name: spring_backend
+    ports:
+      - "8080:8080" # Exposes your REST APIs to your desktop browser/Postman
+    environment:
+      - DB_HOST=oracle_container # Uses the database service name as the hostname
+      - DB_PORT=1521
+      - DB_SERVICE=FREEPDB1
+      - DB_USER=oracle_user
+      - DB_PASS=julia
+    depends_on:
+      # Waits for the DB container to start before running Spring Boot
+      oracle_db:
+        condition: service_healthy
+
+  # 3. JavaScript Service
+  frontend_app:
+    build: ./spring_rest/src/main/resources/static
+    container_name: web_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend_app
+
+volumes:
+  oradata: # Ensures your data isn't deleted when the container stops
+
+
+#  # 1. PostgreSQL Service
+#  postgres_db:
+#   image: postgres:15-alpine
+#   container_name: postgres_container
+#   environment:
+#     - POSTGRES_USER=postgres
+#     - POSTGRES_PASSWORD=julia
+#     - POSTGRES_DB=student_directory
+#   ports:
+#     - "5432:5432"  # Allows you to connect from PgAdmin/DBeaver on your desktop
+#   volumes:
+#     - pgdata:/var/lib/postgresql/data # postgres_db:
+
+#   # 2. Spring Boot Service
+#   backend_app:
+#     build: ./hibernate-demo  # Points to the folder containing your backend Dockerfile
+#     container_name: spring_backend
+#     ports:
+#       - "8080:8080"   # Exposes your REST APIs to your desktop browser/Postman
+#     environment:
+#       - DB_HOST=postgres_container  # Uses the database service name as the hostname
+#       - DB_SCHEMA=student_directory
+#       - DB_USER=postgres
+#       - DB_PASS=julia
+#     depends_on:
+#       - postgres_db  # Waits for the DB container to start before running Spring Boot
+
+# volumes:
+#   pgdata:  # Ensures your data isn't deleted when the container stops
