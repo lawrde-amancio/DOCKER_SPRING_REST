@@ -29,7 +29,7 @@ services:
       - DB_PORT=1521
       - DB_SERVICE=FREEPDB1
       - DB_USER=oracle_user
-      - DB_PASS=julia
+      - DB_PASS=@HardworkingLaurde7
     depends_on:
       # Waits for the DB container to start before running Spring Boot
       oracle_db:
