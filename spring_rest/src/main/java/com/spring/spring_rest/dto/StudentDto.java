@@ -1,0 +1,75 @@
+package com.spring.spring_rest.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+/**
+ * Data Transfer Object (DTO) representing student data exchanged between
+ * the REST API layer and the service layer, 
+ * including input validation constraints.
+ */
+public class StudentDto {
+    private Long id;
+
+    @Size(min=2, max=50, message="Must be 2 to 50 characters.")
+    private String firstName;
+
+    @Size(min=2, max=50, message="Must be 2 to 50 characters.")
+    private String lastName;
+
+    @NotNull 
+    @Email(message="Email is required and should be valid")
+    private String email;
+   
+
+    /**
+     * Constructs a new {@code StudentDto} with all fields initialized.
+     *
+     * @param id        the unique identifier of the student
+     * @param firstName the student's first name
+     * @param lastName  the student's last name
+     * @param email     the student's email address
+     */
+    public StudentDto(Long id, String firstName, String lastName,
+        String email) {
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+        }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    
+}
